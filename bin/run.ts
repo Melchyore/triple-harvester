@@ -12,7 +12,7 @@ import { MyActionObserverRdfDereference } from '..'
 
 type RequestOptions = {
   hostname: string,
-  port: number,
+  port?: number,
   path: string,
   method: string,
   headers: {
@@ -83,7 +83,6 @@ function isValidHttpUrl (endpoint: string) {
               const { hostname, port, pathname } = new URL(targetEndpoint)
               const options: RequestOptions = {
                 hostname,
-                port: parseInt(port),
                 path: pathname,
                 method: 'POST',
                 headers: {
@@ -92,6 +91,10 @@ function isValidHttpUrl (endpoint: string) {
                   Authorization: `Basic ${Buffer.from(credentials).toString('base64')}`,
                   Accept: 'text/turtle',
                 }
+              }
+
+              if (port) {
+                options.port = parseInt(port)
               }
   
               if (slug) {
