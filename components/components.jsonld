@@ -1,8 +1,8 @@
 {
-  "@context": "https://linkedsoftwaredependencies.org/bundles/npm/example-actor-rdf-dereference/^1.0.0/components/context.jsonld",
-  "@id": "npmd:example-actor-rdf-dereference",
+  "@context": "https://linkedsoftwaredependencies.org/bundles/npm/triple-harvester/^1.0.0/components/context.jsonld",
+  "@id": "npmd:triple-harvester",
   "@type": "Module",
-  "requireName": "example-actor-rdf-dereference",
+  "requireName": "triple-harvester",
   "import": [
     "files-ex:components/ActionObserver/RdfDereference/My.jsonld"
   ]

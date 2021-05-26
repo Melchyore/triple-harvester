@@ -1,9 +1,9 @@
 {
   "@context": [
-    "https://linkedsoftwaredependencies.org/bundles/npm/example-actor-rdf-dereference/^1.0.0/components/context.jsonld",
+    "https://linkedsoftwaredependencies.org/bundles/npm/triple-harvester/^1.0.0/components/context.jsonld",
     "https://linkedsoftwaredependencies.org/bundles/npm/@comunica/bus-rdf-dereference/^1.0.0/components/context.jsonld"
   ],
-  "@id": "npmd:example-actor-rdf-dereference",
+  "@id": "npmd:triple-harvester",
   "components": [
     {
       "@id": "ex:ActionObserver/Http/Stats",
