@@ -10,6 +10,20 @@ import type { Bindings } from '@comunica/types'
 
 import { MyActionObserverRdfDereference } from '..'
 
+type RequestOptions = {
+  hostname: string,
+  port: number,
+  path: string,
+  method: string,
+  headers: {
+    'Content-Type': string,
+    'Content-Length': number,
+    Authorization: string,
+    Accept: string,
+    Slug?: string
+  }
+}
+
 function isValidHttpUrl (endpoint: string) {
   let url = null
 
@@ -34,72 +48,83 @@ function isValidHttpUrl (endpoint: string) {
     observer: 'urn:observer:my',
   })
 
-  const args = process.argv
-  const endpoint = args[2]
-  const queryFilePath = args[3]
+  const sourceEndpoint = process.env.ENDPOINT_SOURCE
+  const targetEndpoint = process.env.ENDPOINT_TARGET
+  const credentials = process.env.CREDENTIALS
+  const queryFilePath = process.env.QUERY_FILE_PATH
+  const slug = process.env.SLUG
 
-  if (endpoint && queryFilePath) {
-    if (isValidHttpUrl(endpoint)) {
+  if (sourceEndpoint && targetEndpoint && queryFilePath) {
+    if (isValidHttpUrl(sourceEndpoint) && isValidHttpUrl(targetEndpoint)) {
       try {
         const query = await readFile(queryFilePath)
-        const result = await engine.query(
-          query.toString(),
-          { sources: [endpoint] }
-        ) as IActorQueryOperationOutputBindings
-
-        let body = ''
-        let counter = 0
-
-        setTimeout(() => {
-          result.bindingsStream.on('data', (data: Bindings) => {
-            body += `<${data.get('?s').value}> <${data.get('?p').value}> <${data.get('?o').value}>.\n`
-
-            ++counter
-
-            console.log(`Harvesting ${counter} triple${counter > 1 ? 's' : ''}`)
-          })
-
-          result.bindingsStream.on('end', () => {
-            console.log('All triples have been harvested. Pushing to the server...')
-
-            const options = {
-              hostname: 'fairdata.systems',
-              port: 8890,
-              path: '/DAV/home/LDP/Hackathon/',
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/n-triples',
-                'Content-Length': Buffer.byteLength(body),
-                Authorization: `Basic ${Buffer.from('ldp:ldp').toString('base64')}`,
-                Accept: 'text/turtle',
-                Slug: 'OBM'
-              }
-            }
-
-            // We push the triples to the server.
-            const request = http.request(options, response => {
-              const statusCode = response.statusCode
-
-              if (statusCode >= 200 && statusCode < 300) {
-                console.log('Triples pushed successfully to the server.')
-              } else {
-                throw new Error('Could not push triples to the server.')
-              }
+        
+        try {
+          const result = await engine.query(
+            query.toString(),
+            { sources: [sourceEndpoint] }
+          ) as IActorQueryOperationOutputBindings
+  
+          let body = ''
+          let counter = 0
+  
+          setTimeout(() => {
+            result.bindingsStream.on('data', (data: Bindings) => {
+              body += `<${data.get('?s').value}> <${data.get('?p').value}> <${data.get('?o').value}>.\n`
+  
+              ++counter
+  
+              console.log(`Harvesting ${counter} triple${counter > 1 ? 's' : ''}`)
             })
-
-            request.on('error', error => {
-              console.error(error)
+  
+            result.bindingsStream.on('end', () => {
+              console.log('All triples have been harvested. Pushing to the server...')
+  
+              const { hostname, port, pathname } = new URL(targetEndpoint)
+              const options: RequestOptions = {
+                hostname,
+                port: parseInt(port),
+                path: pathname,
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/n-triples',
+                  'Content-Length': Buffer.byteLength(body),
+                  Authorization: `Basic ${Buffer.from(credentials).toString('base64')}`,
+                  Accept: 'text/turtle',
+                }
+              }
+  
+              if (slug) {
+                options.headers.Slug = slug
+              }
+  
+              // We push the triples to the server.
+              const request = http.request(options, response => {
+                const statusCode = response.statusCode
+  
+                if (statusCode >= 200 && statusCode < 300) {
+                  console.log(`Triples pushed successfully to the target endpoint ${targetEndpoint}.`)
+                } else {
+                  throw new Error(`Could not push triples to the target endpoint ${targetEndpoint}.`)
+                }
+              })
+  
+              request.on('error', error => {
+                console.error(error)
+              })
+  
+              request.write(body)
+              request.end()
             })
-
-            request.write(body)
-            request.end()
-          })
-        }, 100)
+          }, 100)
+        } catch {
+          throw new Error (`Could not harvest triples from source endpoint ${sourceEndpoint}.`)
+        }
       } catch {
         throw new Error(`Could not open file: ${queryFilePath}`)
       }
     } else {
-      throw new Error('The endpoint is not a valid URI.')
+      throw new Error('One or both of the endpoints is/are not valid.')
     }
   }
 })()
