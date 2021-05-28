@@ -58,28 +58,28 @@ function isValidHttpUrl (endpoint: string) {
     if (isValidHttpUrl(sourceEndpoint) && isValidHttpUrl(targetEndpoint)) {
       try {
         const query = await readFile(queryFilePath)
-        
+
         try {
           const result = await engine.query(
             query.toString(),
             { sources: [sourceEndpoint] }
           ) as IActorQueryOperationOutputBindings
-  
+
           let body = ''
           let counter = 0
-  
+
           setTimeout(() => {
             result.bindingsStream.on('data', (data: Bindings) => {
               body += `<${data.get('?s').value}> <${data.get('?p').value}> <${data.get('?o').value}>.\n`
-  
+
               ++counter
-  
+
               console.log(`Harvesting ${counter} triple${counter > 1 ? 's' : ''}`)
             })
-  
+
             result.bindingsStream.on('end', () => {
               console.log('All triples have been harvested. Pushing to the server...')
-  
+
               const { hostname, port, pathname } = new URL(targetEndpoint)
               const options: RequestOptions = {
                 hostname,
@@ -96,26 +96,26 @@ function isValidHttpUrl (endpoint: string) {
               if (port) {
                 options.port = parseInt(port)
               }
-  
+
               if (slug) {
                 options.headers.Slug = slug
               }
-  
+
               // We push the triples to the server.
               const request = http.request(options, response => {
                 const statusCode = response.statusCode
-  
+
                 if (statusCode >= 200 && statusCode < 300) {
                   console.log(`Triples pushed successfully to the target endpoint ${targetEndpoint}.`)
                 } else {
                   throw new Error(`Could not push triples to the target endpoint ${targetEndpoint}.`)
                 }
               })
-  
+
               request.on('error', error => {
                 console.error(error)
               })
-  
+
               request.write(body)
               request.end()
             })
