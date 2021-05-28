@@ -1,0 +1,11 @@
+version: "3"
+services:
+
+  tpf_server:
+    image: markw/tpfserver:latest
+    container_name: tpfserver
+    ports:
+      - "5000:3000"
+    environment:
+      SPARQL: ${ENDPOINT_SOURCE}
+
