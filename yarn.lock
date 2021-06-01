@@ -61,7 +61,7 @@
   resolved "https://registry.yarnpkg.com/@comunica/actor-http-proxy/-/actor-http-proxy-1.21.1.tgz#6efdec0f921d1d94a95c9b2dc7a0c475a551b99a"
   integrity sha512-Z3NvOzZeffZ+aRBZVg3apbVSNjYvAUE49oOL+BrBtT5CuEf+RUOCcSOV/UhpITIFg21/uuyaxvJaT5RmfH+xzw==
 
-"@comunica/actor-init-sparql@^1.14.0":
+"@comunica/actor-init-sparql@^1.21.1":
   version "1.21.1"
   resolved "https://registry.yarnpkg.com/@comunica/actor-init-sparql/-/actor-init-sparql-1.21.1.tgz#fb8eeb57ee181ee778f802245bd11170608f567c"
   integrity sha512-lDiMgpktwg/bzKAZip+s8k6Y7LDYfkYuqo3i1ZD+EdgUm484yuMo7K3Y21P2C04w5FazYAbnx7AzEj1hrdc0iA==
@@ -1060,7 +1060,7 @@
     "@types/rdf-js" "*"
     asynciterator "^3.1.0"
 
-"@comunica/bus-rdf-dereference@^1.14.0", "@comunica/bus-rdf-dereference@^1.21.1":
+"@comunica/bus-rdf-dereference@^1.21.1":
   version "1.21.1"
   resolved "https://registry.yarnpkg.com/@comunica/bus-rdf-dereference/-/bus-rdf-dereference-1.21.1.tgz#ade9d85614dad85f5095993c6447eb3bb8099d82"
   integrity sha512-gejQdUmWCtXzlrSIVwVBuTtijLncO88hpqZjqkNo+WKTilCT9GdXSqRw137GX6ZPsBXKf/Pztupid3oUPG+2xg==
@@ -1184,7 +1184,7 @@
   resolved "https://registry.yarnpkg.com/@comunica/context-entries/-/context-entries-1.21.1.tgz#c74b03d6f35a719d04fcced07b017e5e8ff9ea2e"
   integrity sha512-7wBb+J+YLg4hcRQLFeP6/2b/xyK+lnQlc71OSjVMinQx1OO6tsjqlqHvQ6py56uVFs3cYduASgFuHTRVuoe1xA==
 
-"@comunica/core@^1.14.0", "@comunica/core@^1.21.1", "@comunica/core@~1.21.1":
+"@comunica/core@^1.21.1", "@comunica/core@~1.21.1":
   version "1.21.1"
   resolved "https://registry.yarnpkg.com/@comunica/core/-/core-1.21.1.tgz#6471d0253a15ffc1e4564568f1266fbf92838d1a"
   integrity sha512-5lY/HkyOCorY2CtxQiKUKEOcUGjIKf/YG/txJrz84SKuy+zC91zq1Zt8qWfzNihCcWrgfmk0oZuvjbYvZGK4EA==
@@ -1247,7 +1247,7 @@
   dependencies:
     "@comunica/runner" "^1.21.1"
 
-"@comunica/runner@^1.14.0", "@comunica/runner@^1.21.1":
+"@comunica/runner@^1.21.1":
   version "1.21.1"
   resolved "https://registry.yarnpkg.com/@comunica/runner/-/runner-1.21.1.tgz#856a024065d56372cd63982badd35f364fe7c8e4"
   integrity sha512-yFeHvFLGHTYXlROK6xKoWLnW0Wx0jL+NRzvB3izIXc+p34bOuua8sjmGFQzW0OU7/04S0xM8BUTG2n33s26yUw==

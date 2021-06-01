@@ -1,4 +1,5 @@
-FROM comunica/actor-init-sparql:latest
+FROM node:16
+#FROM comunica/actor-init-sparql:latest
 
 # Install location
 ENV dir /var/www/@comunica/
