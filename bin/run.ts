@@ -7,7 +7,6 @@ import { ActorInitSparql } from '@comunica/actor-init-sparql'
 import { IActorQueryOperationOutputBindings } from '@comunica/bus-query-operation'
 import * as Setup from '@comunica/runner'
 import type { Bindings } from '@comunica/types'
-import { Parser, Generator, SparqlQuery } from 'sparqljs'
 
 import { MyActionObserverRdfDereference } from '..'
 
@@ -23,31 +22,6 @@ type RequestOptions = {
     Accept: string,
     Slug?: string
   }
-}
-
-type QueryTriple = {
-  subject: {
-    termType: string,
-    value: string
-  },
-  predicate: {
-    termType: string,
-    value: string
-  },
-  object: {
-    termType: string,
-    value: string
-  },
-}
-
-type QueryCondition = {
-  type: string,
-  triples: Array<QueryTriple>
-}
-
-type SparqlQueryObject = SparqlQuery & {
-  variables: Array<unknown>,
-  where: Array<QueryCondition>
 }
 
 function isValidHttpUrl (endpoint: string) {
@@ -93,77 +67,37 @@ function isValidHttpUrl (endpoint: string) {
     if (isValidHttpUrl(sourceEndpoint) && isValidHttpUrl(targetEndpoint)) {
       try {
         const query = await readFile(queryFilePath)
-        const SparqlParser = new Parser()
-        const parsedQuery = SparqlParser.parse(query.toString()) as SparqlQueryObject
-
-        let found = false
-
-        // We check if the query has the variables ?p and ?o.
-        for (const condition of parsedQuery.where) {
-          for (const triple of condition.triples) {
-            if (triple.subject.value === 's' && triple.predicate.value === 'p' && triple.object.value === 'o') {
-              found = true
-
-              break
-            }
-          }
-        }
-
-        if (!found) {
-          parsedQuery.where.push({
-            type: 'bgp',
-            triples: [
-              {
-                subject: {
-                  termType: 'Variable',
-                  value: "s"
-                },
-                predicate: {
-                  termType: 'Variable',
-                  value: "p"
-                },
-                'object': {
-                  termType: 'Variable',
-                  value: "o"
-                }
-              }
-            ]
-          })
-        }
-
-        const SparqlGenerator = new Generator()
 
         try {
           const result = await engine.query(
-            SparqlGenerator.stringify(parsedQuery),
+            query.toString(),
             { sources: [sourceEndpoint] }
           ) as IActorQueryOperationOutputBindings
 
-          let body = ''
-          let counter = 0
-
           setTimeout(() => {
-            result.bindingsStream.on('data', (data: Bindings) => {
-              ++counter
-
-              const object = data.get('?o')?.value
-
-              body += `<${data.get('?s')?.value}> <${data.get('?p')?.value}> `
-
-              if (isValidHttpUrl(object)) {
-                body += `<${object}>`
-              } else {
-                body += `"${object}"`
-              }
-
-              body += '\n'
-
-              process.stdout.write('\x1b[H\x1b[2J')
-              console.log(`Harvesting ${counter} triple${counter > 1 ? 's' : ''}`)
-            })
+            result.bindingsStream.on('data', (data: Bindings) => {})
 
             result.bindingsStream.on('end', () => {
               console.log('All triples have been harvested. Pushing to the server...')
+
+              const triples = observer.triples
+              let body = ''
+
+              for (const triple of triples) {
+                const object = triple.object
+
+                body += `<${triple.subject}> <${triple.predicate}> `
+
+                if (isValidHttpUrl(object)) {
+                    body += `<${object}>`
+                } else {
+                    body += `"${object}"`
+                }
+
+                body += '.\n'
+              }
+
+              body = body.trim()
 
               const { hostname, port, pathname } = new URL(targetEndpoint)
               const options: RequestOptions = {
