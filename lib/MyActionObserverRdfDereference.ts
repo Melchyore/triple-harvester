@@ -1,5 +1,12 @@
 import {IActionRdfDereference, IActorRdfDereferenceOutput} from "@comunica/bus-rdf-dereference";
 import {ActionObserver, Actor, IActionObserverArgs, IActorTest} from "@comunica/core";
+import type { Quad } from 'rdf-js'
+
+type Triple = {
+  subject: string,
+  predicate: string,
+  object: string
+}
 
 /**
  * An MyActionObserverRdfDereference will be subscribed to the rdf-dereference bus.
@@ -16,6 +23,8 @@ export class MyActionObserverRdfDereference extends ActionObserver<IActionRdfDer
    * A counter of all quads that were parsed across all documents.
    */
   public quads: number = 0;
+
+  public readonly triples: Array<Triple> = []
 
   constructor(args: IActionObserverArgs<IActionRdfDereference, IActorRdfDereferenceOutput>) {
     super(args);
@@ -41,7 +50,20 @@ export class MyActionObserverRdfDereference extends ActionObserver<IActionRdfDer
         if (event === 'data') {
           quads.removeListener('newListener', listener); // We don't want to listen multiple times
           // Attach a quads listener, that will just increment a counter for each incoming triple
-          quads.on('data', () => this.quads++);
+          quads.on('data', (quad: Quad) => {            
+            if (!quad.graph.value) {
+              this.quads++
+            
+              this.triples.push({
+                subject: quad.subject.value,
+                predicate: quad.predicate.value,
+                object: quad.object.value
+              })
+
+              process.stdout.write('\x1b[H\x1b[2J')
+              console.log(`Harvesting ${this.quads} triple${this.quads > 1 ? 's' : ''}`)
+            }
+          });
         }
       };
       quads.on('newListener', listener);

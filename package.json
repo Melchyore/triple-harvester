@@ -15,8 +15,7 @@
     "@comunica/actor-init-sparql": "^1.21.1",
     "@comunica/bus-rdf-dereference": "^1.21.1",
     "@comunica/core": "^1.21.1",
-    "@comunica/runner": "^1.21.1",
-    "sparqljs": "^3.4.2"
+    "@comunica/runner": "^1.21.1"
   },
   "devDependencies": {
     "@comunica/types": "^1.21.1",
