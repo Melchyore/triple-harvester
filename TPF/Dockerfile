@@ -25,5 +25,5 @@ RUN chmod +x /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
 
 # Default command
-CMD ["--help"]
+# CMD ["--help"]
 

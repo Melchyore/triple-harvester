@@ -85,6 +85,23 @@ function isValidHttpUrl (endpoint: string) {
 
               for (const triple of triples) {
                 const object = triple.object
+                const regexp1 = new RegExp('www\.w3\.org')
+                const regexp2 = new RegExp('feeds/people')
+                const regexp3= new RegExp('openlinksw')
+                const regexp4= new RegExp('dataspace/service')
+                if (regexp1.test(triple.subject)) {
+                    continue 
+                }
+                if (regexp2.test(triple.subject)) {
+                    continue 
+                }
+                if (regexp3.test(triple.subject)) {
+                    continue 
+                }
+                if (regexp4.test(triple.subject)) {
+                    continue 
+                }
+
 
                 body += `<${triple.subject}> <${triple.predicate}> `
 
@@ -105,7 +122,7 @@ function isValidHttpUrl (endpoint: string) {
                 path: pathname,
                 method: 'POST',
                 headers: {
-                  'Content-Type': 'application/n-triples',
+                  'Content-Type': 'text/turtle',
                   'Content-Length': Buffer.byteLength(body),
                   Authorization: `Basic ${Buffer.from(credentials).toString('base64')}`,
                   Accept: 'text/turtle',

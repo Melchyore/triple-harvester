@@ -5,7 +5,7 @@ services:
     image: markw/tpfserver:latest
     container_name: tpfserver
     ports:
-      - "5000:3000"
+      - ${EXPOSE_PORT}:3000
     environment:
-      SPARQL: ${ENDPOINT_SOURCE}
+      SPARQL: ${SPARQL}
 

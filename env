@@ -1,0 +1,5 @@
+export ENDPOINT_SOURCE=http://fairdata.systems:5000/temp
+export ENDPOINT_TARGET=http://fairdata.systems:8890/DAV/home/LDP/Hackathon/
+export CREDENTIALS=ldp:ldp
+export QUERY_FILE_PATH=/tmp/query1
+export EXPOSE_PORT=5000

@@ -5,7 +5,18 @@ services:
     image: markw/tpfserver:latest
     container_name: tpfserver
     ports:
-      - "5000:3000"
+      - ${EXPOSE_PORT}:3000
     environment:
-      SPARQL: ${ENDPOINT_SOURCE}
+      SPARQL: ${SPARQL}
 
+  triple_harvester:
+    image: markw/triple_harvester:latest
+    container_name: triple_harvester
+    environment:
+      ENDPOINT_SOURCE: ${ENDPOINT_SOURCE}
+      ENDPOINT_TARGET: ${ENDPOINT_TARGET}
+      CREDENTIALS: ${CREDENTIALS}
+      QUERY_FILE_PATH: /app/queries/query
+      QUERY_PATH: ${QUERY_PATH}
+    volumes:
+      - ${QUERY_PATH}:/app/queries/
