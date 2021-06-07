@@ -1,3 +1,4 @@
+export SPARQL=http://fairdata.systems:7777/sparql
 export ENDPOINT_SOURCE=http://fairdata.systems:5000/temp
 export ENDPOINT_TARGET=http://fairdata.systems:8890/DAV/home/LDP/Hackathon/
 export CREDENTIALS=ldp:ldp

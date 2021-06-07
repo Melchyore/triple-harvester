@@ -4,3 +4,4 @@
 
 node ./bin/run 
 
+touch $QUERY_PATH/complete
