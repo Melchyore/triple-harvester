@@ -23,6 +23,7 @@ function setenviron(line) {
     }
     if (key == "QUERY_PATH") {
       process.env.QUERY_PATH = val;
+      process.env.QUERY_FILE_PATH=val + "query";
     }
     if (key == "EXPOSE_PORT") {
       process.env.EXPOSE_PORT = val;
