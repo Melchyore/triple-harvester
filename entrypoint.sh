@@ -1,7 +1,8 @@
 #!/bin/bash
 
 #source /env
+sleep 5
 
 node ./bin/run 
 
-touch $QUERY_PATH/complete
+echo "done" >> $QUERY_PATH/complete
