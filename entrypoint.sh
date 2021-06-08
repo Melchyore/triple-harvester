@@ -5,4 +5,4 @@ sleep 5
 
 node ./bin/run 
 
-echo "done" >> $QUERY_PATH/complete
+echo "done" > $QUERY_PATH/complete

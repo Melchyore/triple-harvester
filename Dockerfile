@@ -9,5 +9,6 @@ COPY . ${dir}
 
 #COPY ./entrypoint.sh ${dir}/entrypoint.sh
 WORKDIR ${dir}
-ENTRYPOINT ["bash",  "entrypoint.sh"]
+#ENTRYPOINT ["bash",  "entrypoint.sh"]
+ENTRYPOINT ["node",  "entrypoint.js"]
 
